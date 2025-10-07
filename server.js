@@ -4,13 +4,11 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// middlewares
 app.use(cors());
 app.use(express.json());
 
-// ملف الطلبات
 const DATA_FILE = "./commandes.json";
 
 // دالة لحفظ الطلبات
@@ -24,7 +22,7 @@ function saveCommande(commande) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(commandes, null, 2));
 }
 
-// 📩 endpoint: استقبال الطلب من التطبيق
+// استقبال الطلبات من التطبيق
 app.post("/commande", (req, res) => {
   const { nom, prenom, phone, address, plat } = req.body;
 
@@ -47,20 +45,19 @@ app.post("/commande", (req, res) => {
   res.json({ message: "✅ Commande reçue avec succès !" });
 });
 
-// 🌐 endpoint: afficher toutes les commandes
+// عرض جميع الطلبات
 app.get("/commandes", (req, res) => {
   if (!fs.existsSync(DATA_FILE)) return res.json([]);
   const data = fs.readFileSync(DATA_FILE);
   res.json(JSON.parse(data || "[]"));
 });
 
-// 📄 afficher admin.html
+// عرض admin.html
 app.get("/", (req, res) => {
   res.sendFile(path.resolve("./admin.html"));
 });
 
-// 🚀 démarrage du serveur
+// تشغيل السيرفر
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Serveur lancé sur http://100.95.0.195:${PORT}`);
+  console.log(`✅ Serveur lancé sur le port ${PORT}`);
 });
-
