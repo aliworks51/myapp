@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>📋 Liste des Commandes</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #fff8f0;
+        margin: 0;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        color: #ff6600;
+        margin-bottom: 30px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      th,
+      td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: left;
+        font-size: 15px;
+      }
+      th {
+        background: #ff6600;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      .refresh {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        border: none;
+        background: #ff6600;
+        color: white;
+        font-size: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .refresh:hover {
+        background: #ff8533;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🍽️ Liste des Commandes</h1>
+
+    <button class="refresh" onclick="loadCommandes()">🔄 Actualiser</button>
+
+    <table id="table">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Téléphone</th>
+          <th>Plat</th>
+          <th>Adresse</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      const SERVER = "http://192.168.1.119:3000"; // ⚠️ نفس IP ديالك
+
+      async function loadCommandes() {
+        try {
+          const res = await fetch(`${SERVER}/commandes`);
+          const data = await res.json();
+          const tbody = document.querySelector("tbody");
+          tbody.innerHTML = "";
+
+          data.reverse().forEach((cmd) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${cmd.nom}</td>
+              <td>${cmd.prenom}</td>
+              <td>${cmd.phone}</td>
+              <td>${cmd.plat}</td>
+              <td>${cmd.address}</td>
+              <td>${cmd.date}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } catch (error) {
+          alert("Erreur de connexion au serveur !");
+          console.error(error);
+        }
+      }
+
+      loadCommandes();
+      setInterval(loadCommandes, 5000); // تحديث كل 5 ثواني
+    </script>
+  </body>
+</html>
